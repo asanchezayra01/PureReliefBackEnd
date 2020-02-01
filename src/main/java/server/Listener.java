@@ -78,16 +78,26 @@ public class Listener {
 		server.addEventListener("registerRelief", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
 				lg.info("Attending Event Register Relief Requested.");
-				//APIcall
-			}
-		});
+				try {
+					DBAPI api = new DBAPI();
+					api.registerRelief(response);
+				}catch(Exception ex){
+					client.sendEvent("failure", "Registration Failure");
+				}
+				}
+			});
 		
 		server.addEventListener("shelterNeccAmt", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
 				lg.info("Attending Event Shelter Neccessity Amount Requested.");
-				//APIcall
-			}
-		});
+				try {
+					DBAPI api = new DBAPI();
+					api.shelterNeccAmt(response);
+				}catch(Exception ex){
+					client.sendEvent("failure", "Response Failure");
+				}
+				}
+			});
 		
 		server.addEventListener("shelterReqSupp", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
