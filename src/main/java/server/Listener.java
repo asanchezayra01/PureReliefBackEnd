@@ -8,7 +8,9 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.corundumstudio.socketio.listener.DisconnectListener;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ public class Listener {
 			config = new Configuration();
 			config.setHostname(hostName);
 			config.setPort(portNumber);
-			config.setOrigin("https://10.136.127.220:"+portNumber);
+			
 			server =  new SocketIOServer(config);
 			lg = LoggerFactory.getLogger(Listener.class);
 		}
@@ -74,6 +76,21 @@ public class Listener {
 				//APIcall
 			}
 		});
+		
+		server.addConnectListener(new ConnectListener() { 
+					public void onConnect(SocketIOClient client) {
+					lg.info("I have recieved a connection.");
+					System.out.println(client.getRemoteAddress());
+					
+				//APIcall
+			} } );
+		
+		server.addDisconnectListener(new DisconnectListener () {
+					public void onDisconnect(SocketIOClient client) {
+						lg.info("I am disconnecting");
+						System.out.println(client.getRemoteAddress());
+					}
+				});
 		
 		server.start();
 		
