@@ -31,29 +31,6 @@ public class DBAPI {
 	}
 	
 	
-	public String registerShelter(JSONObject json) throws Exception
-	{
-		String out = "";
-		
-		try
-		{
-			final String query = "CALL pure_relief.register_shelter(?,?)";
-		
-			CallableStatement procedure = connect.prepareCall(query);
-		
-			procedure.setString(1, json.getString("username"));
-			procedure.setString(2, json.getString("password"));
-		
-			procedure.execute();
-		
-			return out= "SUCCESS";
-		}
-		catch(Exception ex)
-		{
-			throw ex;
-		}
-	}
-	
 	public String getAllRequests() throws Exception
 	{
 		try
@@ -79,7 +56,7 @@ public class DBAPI {
 		}
 	}
 	
-	public String createReliefInventory(int user_id, int type, int shelter_id, int urgency, int amount ) throws Exception
+	public String createReliefInventory(JSONObject json) throws Exception
 	{
 		try
 		{
@@ -87,15 +64,15 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setInt("user_id",user_id);
+			procedure.setInt("user_id",json.getInt("userId");
 			
-			procedure.setInt("type", type);
+			procedure.setInt("type", json.getInt("type"));
 			
-			procedure.setInt("urgency", urgency);
+			procedure.setInt("urgency", json.getInt("urgency"));
 			
-			procedure.setInt("shelter",shelter_id);
+			procedure.setInt("shelter", json.getInt("shelter"));
 			
-			procedure.setInt("amount", amount);
+			procedure.setInt("amount", json.getInt("amount"));
 		
 			procedure.execute();
 			
@@ -109,7 +86,7 @@ public class DBAPI {
 		}
 	}
 	
-	public String createShelterNecessity(int user_id, int type, int urgency, int amount) throws Exception
+	public String createShelterNecessity(JSONObject json) throws Exception
 	{
 		try
 		{
@@ -119,13 +96,13 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setInt("user_id",user_id);
+			procedure.setInt("user_id",json.getInt("user_id"));
 			
-			procedure.setInt("type", type);
+			procedure.setInt("type", json.getInt("type"));
 			
-			procedure.setInt("urgency", urgency);
+			procedure.setInt("urgency", json.getInt("urgency"));
 			
-			procedure.setInt("amount", amount);
+			procedure.setInt("amount", json.getInt("amount"));
 			
 			procedure.execute();
 			
@@ -137,7 +114,7 @@ public class DBAPI {
 		}
 	}
 	
-	public String donateToShelter(int shelter, int relief, int amountDonated ) throws Exception
+	public String donateToShelter( JSONObject json) throws Exception
 	{
 		try
 		{
@@ -147,11 +124,11 @@ public class DBAPI {
 
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setInt("shelter_id", shelter);
+			procedure.setInt("shelter_id", json.getInt("shelter"));
 			
-			procedure.setInt("relief_id", relief);
+			procedure.setInt("relief_id", json.getInt("relief"));
 			
-			procedure.setInt("amount_donated", amountDonated);
+			procedure.setInt("amount_donated", json.getInt("amountDonated"));
 			
 			procedure.execute();
 			
@@ -177,11 +154,11 @@ public class DBAPI {
 		}
 		catch(Exception ex)
 		{
-			throw new Exception("Failed to get all the shelters.")
+			throw new Exception("Failed to get all the shelters.");
 		}
 	}
 	
-	public String getShelterById(int shelter) throws Exception
+	public String getShelterById(JSONObject json) throws Exception
 	{
 		try
 		{
@@ -189,13 +166,13 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setInt("shelter", shelter);
+			procedure.setInt("shelter", json.getInt("shelter"));
 			
 			procedure.execute();
 			
-			JSONObject json = JSONTranslator.resultSetToJSONObject(procedure.getResultSet());
+			JSONObject jsonOut = JSONTranslator.resultSetToJSONObject(procedure.getResultSet());
 			
-			return json.toString();
+			return jsonOut.toString();
 		}
 		catch(Exception ex)
 		{
@@ -203,7 +180,7 @@ public class DBAPI {
 		}
 	}
 	
-	public String getUserId (String name) throws Exception
+	public String getUserId (JSONObject json) throws Exception
 	{
 		try
 		{
@@ -211,7 +188,7 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setString("username", name);
+			procedure.setString("username", json.getString(name));
 			
 			int userID = 0;
 			
@@ -230,7 +207,7 @@ public class DBAPI {
 		}
 	}
 	
-	public String loginValidation(String user_name, String password) throws Exception
+	public String loginValidation(JSONObject json) throws Exception
 	{
 		try
 		{
@@ -239,21 +216,189 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setString("username", user_name);
+			procedure.setString("user_name", json.getString("user_name"));
 			
-			procedure.setString("password", password);
+			procedure.setString("password", json.getString("password"));
 			
 			boolean DOES_NOT_EXIST = false;
 					
 			boolean LOGGED_IN = false;
 			
-			return "";
+			int user_id = Integer.parseInt(getUserId(json));
+			
+			procedure.registerOutParameter("response", 0 );
+			
+			procedure.registerOutParameter("logged_in", 0);
+			
+			procedure.registerOutParameter("user_id", user_id);
+			
+			procedure.execute();
+			
+			if (DOES_NOT_EXIST)
+			{
+				throw new Exception("The user does not exist!")
+			}
+			
+			if (LOGGED_IN)
+			{
+				throw new Exception("The user is already logged into the server");
+			}
+			
+			return json.toString();
 			
 		}
 		catch(Exception ex)
 		{
-			throw new Exception("Invalid credentials were provided.");
+			throw new Exception("Invalid credentials were provided, " + ex.getMessage());
 		}
 	}
+	
+	public String logout(JSONObject json) throws Exception
+	{
+		try
+		{
+			final String query = "CALL pure_relief.logout(?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			
+			procedure.setString("username", json.getString("user_name"));
+			
+			procedure.execute();
+			
+			return "SUCCESS";
+		}
+		catch(Exception ex)
+		{
+			throw new Exception("Failure occurred when try to logout");
+		}
+	}
+	
+	public String registerRelief(JSONObject json) throws Exception
+	{
+		try
+		{
+			String name = json.getString("name");
+			String password = json.getString("password");
+			String location = json.getString("location");
+
+			final String query = "CALL pure_relief.register_relief(?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			
+			procedure.setString("name", name);
+			procedure.setString("pasword", password);
+			procedure.setString("location", location);
+			
+			procedure.execute();
+			
+			return "SUCCESS";
+		}
+		catch(Exception ex)
+		{
+			throw new Exception("An error occurred while attempting to register your own devce");
+		}
+	}
+	
+	public String registerShelter(JSONObject json) throws Exception 
+	{
+		try
+		{
+			String name = json.getString("name");
+			String password = json.getString("password");
+			String location = json.getString("location");
+			
+			final String query = "CALL pure_relief.register_shelter(?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			
+			procedure.setString("name", name);
+			procedure.setString("pasword", password);
+			procedure.setString("location", location);
+			
+			procedure.execute();
+			
+			return "SUCCESS";
+		}
+		catch(Exception ex)
+		{
+			throw new Exception("An error occurred while attempting to register");
+		}
+	}
+	
+	public String requestMoreNecessities(JSONObject json) throws Exception
+	{
+		
+		try
+		{
+			int shelterID = json.getInt("shelter");
+			
+			int necessity_type = json.getInt("type");
+			
+			int amount = json.getInt("amount");
+			
+			int urgency = json.getInt("urgency");
+			
+			final String query = "CALL pure_relief.registe_more_necessities(?,?,?,?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			
+			procedure.setInt("shelter", shelterID);
+			procedure.setInt("necessity_type", necessity_type);
+			procedure.setInt("amount", amount);
+			procedure.setInt("urgency", urgency);
+			
+			procedure.execute();
+			
+			return "SUCCESS";
+			
+		}
+		catch(Exception ex)
+		{
+			throw new Exception("An error occurred while attempting to request more necessities.");
+		}
+		
+	}
+	
+	public String updateInventoryDetails(JSONObject json) throws Exception
+	{
+		try
+		{
+			int type = json.getInt("type");
+			
+			int amount = json.getInt("amount");
+			
+			int userID = json.getInt("user_id");
+			
+			int urgency = json.getInt("urgency");
+			
+			boolean success = true;
+			
+			final String query = "CALL pure_relief.registe_more_necessities(?,?,?,?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			
+			procedure.setInt("type", type);
+			procedure.setInt("amount", amount);
+			procedure.setInt("userID", userID);
+			procedure.setInt("urgency", urgency);
+			procedure.setBoolean("4", success);
+			
+			procedure.execute();
+			
+			if(success)
+			{
+				
+			}
+			
+			
+		}
+		catch(Exception ex)
+		{
+			
+		}
+		
+	}
+	
+	
 
 }
