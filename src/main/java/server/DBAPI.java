@@ -64,7 +64,7 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setInt("user_id",json.getInt("userId");
+			procedure.setInt("user_id",json.getInt("userId"));
 			
 			procedure.setInt("type", json.getInt("type"));
 			
@@ -188,7 +188,7 @@ public class DBAPI {
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
-			procedure.setString("username", json.getString(name));
+			procedure.setString("username", json.getString("name"));
 			
 			int userID = 0;
 			
@@ -236,7 +236,7 @@ public class DBAPI {
 			
 			if (DOES_NOT_EXIST)
 			{
-				throw new Exception("The user does not exist!")
+				throw new Exception("The user does not exist!");
 			}
 			
 			if (LOGGED_IN)
@@ -441,7 +441,7 @@ public class DBAPI {
 		
 	}
 	
-	public String update_request_donation(JSONObject json) throws Exception
+	public String updateRequestDonation(JSONObject json) throws Exception
 	{
 		try
 		{
@@ -452,7 +452,7 @@ public class DBAPI {
 			final String query = "CALL pure_relief.update_request_donation(?,?,?)";
 			
 			CallableStatement procedure = connect.prepareCall(query);
-			procedure.setInt("amountDonated", donated);
+			procedure.setInt("amountDonated", amountDonated);
 			procedure.setInt("shelter_id", shelter);
 			procedure.setInt("type",type);
 			

@@ -65,11 +65,12 @@ public class Listener {
 		
 		server.addEventListener("registerShelter", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Register Shelters Requested.");
+				lg.info("Register Shelters Requested.");
 				try {
 				DBAPI api = new DBAPI();
-				api.registerShelter(response);
+				client.sendEvent("doneRegisteringShelter", api.registerShelter(response));
 			}catch(Exception ex){
+				lg.info(ex.getMessage());
 				client.sendEvent("failure", "Registration Failure");
 			}
 			}
@@ -77,67 +78,192 @@ public class Listener {
 		
 		server.addEventListener("registerRelief", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Register Relief Requested.");
+				lg.info("Register Relief Requested.");
 				try {
 					DBAPI api = new DBAPI();
-					api.registerRelief(response);
+					client.sendEvent("doneRegisteringRelief", api.registerRelief(response));
 				}catch(Exception ex){
+					lg.info(ex.getMessage());
 					client.sendEvent("failure", "Registration Failure");
 				}
 				}
 			});
 		
+		server.addEventListener("login", JSONObject.class, new DataListener<JSONObject>() {
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Login Requested.");
+				
+				try {
+					
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("login", api.loginValidation(response));
+					
+				}catch(Exception ex){
+					
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", "Response Failure");
+					
+				}
+				}
+		});
+		
+		server.addEventListener("logout", JSONObject.class, new DataListener<JSONObject>() {
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Login Requested.");
+				
+				try {
+					
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("logout", api.logout(response));
+					
+				}catch(Exception ex){
+					
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", "Response Failure");
+					
+				}
+				}
+		});
+		
 		server.addEventListener("shelterNeccAmt", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Shelter Neccessity Amount Requested.");
+				lg.info("Shelter Neccessity Amount Requested.");
+				
 				try {
+					
 					DBAPI api = new DBAPI();
-					api.shelterNeccAmt(response);
+					
+					client.sendEvent("shelterNecessityDone", api.createShelterNecessity(response));
+					
 				}catch(Exception ex){
+					
+					lg.info(ex.getMessage());
+					
 					client.sendEvent("failure", "Response Failure");
+					
 				}
 				}
 			});
 		
 		server.addEventListener("shelterReqSupp", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Shelter Shelter Request Supply Requested.");
-				//APIcall
+				lg.info("Shelter Request Supply Requested.");
+				
+				try
+				{
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("eventShelterRequest", api.requestMoreNecessities(response) );
+				}
+				catch(Exception ex)
+				{
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", ex.getMessage());
+				}
+				
 			}
 		});
 		
 		server.addEventListener("reliefInventory", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Relief Inventory Requested.");
-				//APIcall
+				lg.info("Relief Inventory Requested.");
+				
+				try
+				{
+					DBAPI api = new DBAPI();
+					
+					
+					client.sendEvent("eventReliefInventory", api.createReliefInventory(response));
+				}
+				catch (Exception ex)
+				{
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", ex.getMessage());
+				}
 			}
 		});
 		
 		server.addEventListener("reliefUpdateInventory", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Relief Update Inventory Requested.");
-				//APIcall
+				lg.info("Relief Update Inventory Requested.");
+				
+				try
+				{
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("reliefUpdateInventory", api.updateInventoryDetails(response));
+				}
+				catch(Exception ex)
+				{
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", ex.getMessage());
+				}
 			}
 		});
 		
 		server.addEventListener("shelterInfo", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Shelter Info Requested.");
-				//APIcall
+				lg.info("Shelter Info Requested.");
+				
+				try
+				{
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("shelterInfo", api.getShelterById(response));
+				}
+				catch(Exception ex)
+				{
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", ex.getMessage());
+				}
 			}
 		});
 		
 		server.addEventListener("reliefNeccUrg", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
 				lg.info("Attending Event Relief Neccessity Urgency Requested.");
-				//APIcall
+				
+				try {
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("releifNeccUrg", api.getAllRequests());
+				}
+				catch(Exception ex)
+				{
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", ex.getMessage());
+				}
+				
 			}
 		});
 		
-		server.addEventListener("supplyCharter", JSONObject.class, new DataListener<JSONObject>(){
+		server.addEventListener("supplyShelter", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Supply Charter Requested.");
-				//APIcall
+				lg.info("Supply Shelter Requested.");
+				
+				try
+				{
+					DBAPI api = new DBAPI();
+					
+					client.sendEvent("supply", api.requestMoreNecessities(response));
+				}
+				catch(Exception ex)
+				{
+					lg.info(ex.getMessage());
+					
+					client.sendEvent("failure", ex.getMessage());
+					
+					
+				}
 			}
 		});
 		
