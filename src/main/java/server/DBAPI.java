@@ -338,7 +338,9 @@ public class DBAPI {
 			
 			int urgency = json.getInt("urgency");
 			
-			final String query = "CALL pure_relief.registe_more_necessities(?,?,?,?)";
+			boolean success = true;
+			
+			final String query = "CALL pure_relief.register_more_necessities(?,?,?,out boolean)";
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
@@ -346,6 +348,8 @@ public class DBAPI {
 			procedure.setInt("necessity_type", necessity_type);
 			procedure.setInt("amount", amount);
 			procedure.setInt("urgency", urgency);
+			procedure.setBoolean("success", success);
+			
 			
 			procedure.execute();
 			
@@ -373,7 +377,7 @@ public class DBAPI {
 			
 			boolean success = true;
 			
-			final String query = "CALL pure_relief.registe_more_necessities(?,?,?,?)";
+			final String query = "CALL pure_relief.update_inventory_details(?,?,?,?,?)";
 			
 			CallableStatement procedure = connect.prepareCall(query);
 			
@@ -385,16 +389,80 @@ public class DBAPI {
 			
 			procedure.execute();
 			
-			if(success)
+			if(!success)
 			{
-				
+				throw new Exception("Failed to update inventory details");
 			}
 			
+			return "SUCCESS";
 			
 		}
 		catch(Exception ex)
 		{
+			throw new Exception("Failed to update inventory details");
+		}
+		
+	}
+	
+	public String updateNecessityDetails(JSONObject json) throws Exception
+	{
+		try
+		{
+			int type = json.getInt("type");
+			int amount = json.getInt("amount");
+			int userID = json.getInt("userId");
+			int urgency = json.getInt("urgency");
+			boolean success = true;
 			
+			final String query = "CALL pure_relief.update_necessity_details(?,?,?,?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			
+			procedure.setInt("type", type);
+			procedure.setInt("amount", amount);
+			procedure.setInt("userID", userID);
+			procedure.setInt("urgency", urgency);
+			procedure.setBoolean("4", success);
+			
+			procedure.execute();
+			
+			if(!success)
+			{
+				throw new Exception("break");
+			}
+			
+			return "SUCCESS";
+			
+		}
+		catch(Exception ex)
+		{
+			throw new Exception("Could not update neccessity details.");
+		}
+		
+	}
+	
+	public String update_request_donation(JSONObject json) throws Exception
+	{
+		try
+		{
+			int amountDonated = json.getInt("donated");
+			int shelter = json.getInt("shelter");
+			int type = json.getInt("type");
+			
+			final String query = "CALL pure_relief.update_request_donation(?,?,?)";
+			
+			CallableStatement procedure = connect.prepareCall(query);
+			procedure.setInt("amountDonated", donated);
+			procedure.setInt("shelter_id", shelter);
+			procedure.setInt("type",type);
+			
+			procedure.execute();
+			
+			return "SUCCESS";
+		}
+		catch(Exception ex)
+		{
+			throw new Exception("Something failed while trying to update donations for a request.");
 		}
 		
 	}
