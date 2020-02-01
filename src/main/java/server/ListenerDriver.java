@@ -18,6 +18,8 @@ public class ListenerDriver {
 		lg.info("Starting the PureRelief Server.");
 	
 		try {
+			DBAPI api = new DBAPI();
+			api.registerShelter(json);
 			Listener server = Listener.instance("10.136.127.220", 1234);	
 			server.ListenForEvents();
 		} catch(Exception ex) {
