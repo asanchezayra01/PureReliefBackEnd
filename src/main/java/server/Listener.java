@@ -63,10 +63,15 @@ public class Listener {
 	public void ListenForEvents() 
 	{
 		
-		server.addEventListener("registerShelter", String.class, new DataListener<String>(){
-			public void onData(SocketIOClient client, String response, AckRequest ackRequest) {
+		server.addEventListener("registerShelter", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
 				lg.info("Attending Event Requested.");
-				//APIcall
+				try {
+				DBAPI api = new DBAPI();
+				api.registerShelter(response);
+			}catch(Exception ex){
+				client.sendEvent("failure", "Registration Failure");
+			}
 			}
 		});
 		

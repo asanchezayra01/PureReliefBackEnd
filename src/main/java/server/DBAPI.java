@@ -9,7 +9,7 @@ public class DBAPI {
 	
 	private Connection connect;
 	
-	final private String password = "PureRelief1";
+	final private String password = "";
 	
 	public DBAPI() throws Exception
 	{
@@ -19,7 +19,7 @@ public class DBAPI {
 			
 			// Change this to a const.
 			connect = DriverManager
-					.getConnection("jdbc:mysql://10.136.104.49:3306/?user=root&password=" + password);
+					.getConnection("jdbc:mysql://10.136.104.49:3306/?user=server&password=" + password);
 		}
 		catch(Exception ex)
 		{
@@ -38,7 +38,7 @@ public class DBAPI {
 		
 		CallableStatement procedure = connect.prepareCall(query);
 		
-		procedure.setString(1, json.getString("userName"));
+		procedure.setString(1, json.getString("username"));
 		procedure.setString(2, json.getString("password"));
 		
 		procedure.execute();
