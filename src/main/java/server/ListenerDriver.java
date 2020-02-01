@@ -18,7 +18,7 @@ public class ListenerDriver {
 		lg.info("Starting the PureRelief Server.");
 	
 		try {
-			Listener server = Listener.instance("10.136.127.220", 1234);	
+			Listener server = Listener.instance("10.136.104.49", 48900);	
 			server.ListenForEvents();
 		} catch(Exception ex) {
 			lg.error("Error:", ex);
