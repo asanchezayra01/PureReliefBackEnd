@@ -65,7 +65,7 @@ public class Listener {
 		
 		server.addEventListener("registerShelter", JSONObject.class, new DataListener<JSONObject>(){
 			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
-				lg.info("Attending Event Requested.");
+				lg.info("Attending Event Register Shelters Requested.");
 				try {
 				DBAPI api = new DBAPI();
 				api.registerShelter(response);
@@ -75,12 +75,63 @@ public class Listener {
 			}
 		});
 		
-		server.addEventListener("shelterNeccAmt", String.class, new DataListener<String>(){
-			public void onData(SocketIOClient client, String response, AckRequest ackRequest) {
-				lg.info("Attending Event Requested.");
+		server.addEventListener("registerRelief", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Register Relief Requested.");
 				//APIcall
 			}
 		});
+		
+		server.addEventListener("shelterNeccAmt", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Shelter Neccessity Amount Requested.");
+				//APIcall
+			}
+		});
+		
+		server.addEventListener("shelterReqSupp", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Shelter Shelter Request Supply Requested.");
+				//APIcall
+			}
+		});
+		
+		server.addEventListener("reliefInventory", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Relief Inventory Requested.");
+				//APIcall
+			}
+		});
+		
+		server.addEventListener("reliefUpdateInventory", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Relief Update Inventory Requested.");
+				//APIcall
+			}
+		});
+		
+		server.addEventListener("shelterInfo", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Shelter Info Requested.");
+				//APIcall
+			}
+		});
+		
+		server.addEventListener("reliefNeccUrg", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Relief Neccessity Urgency Requested.");
+				//APIcall
+			}
+		});
+		
+		server.addEventListener("supplyCharter", JSONObject.class, new DataListener<JSONObject>(){
+			public void onData(SocketIOClient client, JSONObject response, AckRequest ackRequest) {
+				lg.info("Attending Event Supply Charter Requested.");
+				//APIcall
+			}
+		});
+		
+		
 		
 		server.addConnectListener(new ConnectListener() { 
 					public void onConnect(SocketIOClient client) {
