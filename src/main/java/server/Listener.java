@@ -64,6 +64,7 @@ public class Listener {
 		server.addEventListener("registerShelter", String.class, new DataListener<String>(){
 			public void onData(SocketIOClient client, String response, AckRequest ackRequest) {
 				lg.info("Attending Event Requested.");
+				//APIcall
 			}
 		});
 		
