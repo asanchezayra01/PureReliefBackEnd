@@ -13,7 +13,7 @@ public class ListenerDriver {
 		// TODO Auto-generated method stub
 
 		Logger lg = LoggerFactory.getLogger(Listener.class);
-		lg.info("Starting the SOS Server.");
+		lg.info("Starting the PureRelief Server.");
 	
 		try {
 			Listener server = Listener.instance("10.136.127.220", 1234);	
