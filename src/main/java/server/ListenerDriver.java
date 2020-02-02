@@ -14,11 +14,14 @@ public class ListenerDriver {
 		json.put("username", "shelterA");
 		json.put("password", "password");
 		json.put("image", "");
+		
+		System.out.println(json);
+		
 		Logger lg = LoggerFactory.getLogger(Listener.class);
 		lg.info("Starting the PureRelief Server.");
 	
 		try {
-			Listener server = Listener.instance("10.136.104.49", 48900);	
+			Listener server = Listener.instance("10.136.189.34", 48900);	
 			server.ListenForEvents();
 		} catch(Exception ex) {
 			lg.error("Error:", ex);
